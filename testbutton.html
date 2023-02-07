@@ -7,8 +7,17 @@
       background: linear-gradient(to bottom, #7b4397, #dc2430);
       height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+    }
+
+    #title {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+      color: white;
+      text-shadow: 1px 1px #333;
     }
 
     #redirect-button {
@@ -31,6 +40,7 @@
 </head>
 <body>
 
+<div id="title">Please click this button:</div>
 <button id="redirect-button">Redirect</button>
 
 <script>
