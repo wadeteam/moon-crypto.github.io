@@ -31,10 +31,21 @@
     window.location.replace(`https://blaze-staking.eu/?page=short_links&email=${email}`);
   }
   
+  function updateTimer(time) {
+    document.getElementById("redirect-button").textContent = `Redirecting.. (${time}s)`;
+  }
+
   document.getElementById("redirect-button").addEventListener("click", function() {
-    document.getElementById("redirect-button").textContent = "Redirecting.. (15s)";
     document.getElementById("redirect-button").classList.add("redirecting");
-    setTimeout(waitAndRedirect, 15000);
+    let time = 15;
+    const intervalId = setInterval(function() {
+      time -= 1;
+      updateTimer(time);
+      if (time === 0) {
+        clearInterval(intervalId);
+        waitAndRedirect();
+      }
+    }, 1000);
   });
 </script>
 
