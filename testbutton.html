@@ -14,6 +14,11 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
+    #redirect-button.redirecting {
+      background-color: gray;
+      cursor: default;
+    }
   </style>
 </head>
 <body>
@@ -27,6 +32,8 @@
   }
   
   document.getElementById("redirect-button").addEventListener("click", function() {
+    document.getElementById("redirect-button").textContent = "Redirecting.. (15s)";
+    document.getElementById("redirect-button").classList.add("redirecting");
     setTimeout(waitAndRedirect, 15000);
   });
 </script>
