@@ -1,25 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>API Redirection Page</title>
-  <script>
-    const email = new URL(window.location.href).searchParams.get("email");
-    const apiUrl = `https://blaze-staking.eu/?page=short_links&reward=KOD&email=${email}`;
-
-    function redirectWithApiResponse() {
-      fetch(apiUrl)
-        .then(response => response.text())
-        .then(responseText => {
-          setTimeout(function() {
-            window.location.href = `https://blaze-staking.eu/?page=short_links&reward=${responseText}`;
-          }, 5000);
-        });
+  <title>Redirect Example</title>
+  <style>
+    #redirect-button {
+      background-color: blue;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
-    window.onload = redirectWithApiResponse;
-  </script>
+    #redirect-button.redirecting {
+      background-color: gray;
+      cursor: default;
+    }
+  </style>
 </head>
 <body>
-  <p>Loading...</p>
+
+<button id="redirect-button">Redirect</button>
+
+<script>
+  function waitAndRedirect() {
+    const email = decodeURIComponent(window.location.search.substring(7));
+    window.location.replace(`https://blaze-staking.eu/?page=short_links&email=${email}`);
+  }
+  
+  function updateTimer(time) {
+    document.getElementById("redirect-button").textContent = `Redirecting.. (${time}s)`;
+  }
+
+  document.getElementById("redirect-button").addEventListener("click", function() {
+    document.getElementById("redirect-button").classList.add("redirecting");
+    let time = 15;
+    const intervalId = setInterval(function() {
+      time -= 1;
+      updateTimer(time);
+      if (time === 0) {
+        clearInterval(intervalId);
+        waitAndRedirect();
+      }
+    }, 1000);
+  });
+</script>
+
 </body>
 </html>
