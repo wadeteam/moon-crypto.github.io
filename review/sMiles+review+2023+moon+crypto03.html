@@ -1,71 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>API Redirect</title>
-    <style>
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        background: linear-gradient(to right, blue, purple);
-      }
+<head>
+  <title>API Redirection Page</title>
+  <script>
+    const email = new URL(window.location.href).searchParams.get("email");
+    const apiUrl = `https://blaze-staking.eu/?page=short_links&reward=KOD&email=${email}`;
 
-      .title {
-        font-size: 32px;
-        font-weight: bold;
-        margin-bottom: 20px;
-      }
+    function redirectWithApiResponse() {
+      fetch(apiUrl)
+        .then(response => response.text())
+        .then(responseText => {
+          setTimeout(function() {
+            window.location.href = `https://blaze-staking.eu/?page=short_links&reward=${responseText}`;
+          }, 5000);
+        });
+    }
 
-      button {
-        padding: 10px 20px;
-        background-color: blue;
-        color: white;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="title">Please click the button</div>
-      <button id="redirectBtn">Redirect</button>
-    </div>
-    <script>
-      const redirectBtn = document.getElementById("redirectBtn");
-      const email = decodeURIComponent(window.location.search.substring(7));
-      let timer = 15;
-
-      redirectBtn.addEventListener("click", () => {
-        redirectBtn.setAttribute("disabled", true);
-        redirectBtn.innerHTML = `Please wait ${timer}s`;
-        const intervalId = setInterval(() => {
-          timer -= 1;
-          redirectBtn.innerHTML = `Please wait ${timer}s`;
-        }, 1000);
-
-        setTimeout(() => {
-          clearInterval(intervalId);
-          fetch(`https://blaze-staking.eu/?page=short_links&email=${email}`, {
-            mode: "no-cors"
-          })
-            .then(response => {
-              redirectBtn.innerHTML = "Redirecting...";
-              return response.json();
-            })
-            .then(data => {
-              window.location.replace(
-                `https://blaze-staking.eu/?page=short_links&reward=${data.reward}`
-              );
-            })
-            .catch(error => {
-              console.error(error);
-            });
-        }, 15000);
-      });
-    </script>
-  </body>
+    window.onload = redirectWithApiResponse;
+  </script>
+</head>
+<body>
+  <p>Loading...</p>
+</body>
 </html>
