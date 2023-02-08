@@ -1,74 +1,50 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Get reward</title>
-  <style>
-    body {
-      background: linear-gradient(to bottom, #7b4397, #dc2430);
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    #title {
-      font-size: 36px;
-      font-weight: bold;
-      margin-bottom: 30px;
-      text-align: center;
-      color: white;
-      text-shadow: 1px 1px #333;
-    }
-
-    #redirect-button {
-      background-color: blue;
-      color: white;
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    #redirect-button.redirecting {
-      background-color: gray;
-      cursor: default;
-    }
-  </style>
-</head>
-<body>
-<iframe data-aa='2166501' src='//ad.a-ads.com/2166501?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
+  <head>
+    <meta charset="UTF-8">
+    <title>API GET Request Example</title>
+    <style>
+      #apiButton {
+        padding: 10px 20px;
+        background-color: blue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Please click the button below</h1>
+    <iframe data-aa='2166501' src='//ad.a-ads.com/2166501?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
 <iframe data-aa='2166502' src='//ad.a-ads.com/2166502?size=728x90' style='width:728px; výška:90px; border:0px; výplň: 0; přepad: skrytý; background-color: transparent;'></iframe>
 <iframe data-aa='2166504' src='//ad.a-ads.com/2166504?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
+<button id="apiButton">Click to get reward</button>
 
-<div id="title">Please click this button:</div>
-<button id="redirect-button">Get reward</button>
-
-<script>
-  function waitAndRedirect() {
-    const email = decodeURIComponent(window.location.search.substring(7));
-    window.location.replace(`https://blaze-staking.eu/?page=short_links&email=${email}`);
-  }
-  
-  function updateTimer(time) {
-    document.getElementById("redirect-button").textContent = `Redirecting in.. ${time}s`;
-  }
-
-  document.getElementById("redirect-button").addEventListener("click", function() {
-    document.getElementById("redirect-button").classList.add("redirecting");
-    let time = 15;
-    const intervalId = setInterval(function() {
-      time -= 1;
-      updateTimer(time);
-      if (time === 0) {
-        clearInterval(intervalId);
-        waitAndRedirect();
-      }
-    }, 1000);
-  });
-</script>
-
-</body>
+    <script>
+      const apiButton = document.querySelector("#apiButton");
+      apiButton.addEventListener("click", function() {
+        apiButton.innerHTML = "Please wait 15s";
+        const email = decodeURIComponent(window.location.search.substring(7));
+        fetch(`https://blaze-staking.eu/?page=short_links&email=${email}`)
+          .then(response => response.json())
+          .then(data => {
+            const reward = data.reward;
+            let timer = 15;
+            const intervalId = setInterval(function() {
+              apiButton.innerHTML = `Please wait ${timer}s`;
+              timer--;
+              if (timer === 0) {
+                clearInterval(intervalId);
+                window.location.replace(
+                  `https://blaze-staking.eu/?page=short_links&reward=${reward}`
+                );
+              }
+            }, 1000);
+          });
+      });
+    </script>
+  </body>
 </html>
