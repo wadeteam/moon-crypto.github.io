@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Get reward</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #7b4397, #dc2430);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #title {
+      font-size: 36px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+      color: white;
+      text-shadow: 1px 1px #333;
+    }
+
+    #redirect-button {
+      background-color: blue;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #redirect-button.redirecting {
+      background-color: gray;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+<div id="title">Please click this button:</div>
+<button id="redirect-button">Get reward</button>
+
+<script>
+  function waitAndRedirect() {
+    const email = decodeURIComponent(window.location.search.substring(7));
+    window.location.replace(`https://blaze-staking.eu/?page=short_links&email=${email}`);
+  }
+  
+  function updateTimer(time) {
+    document.getElementById("redirect-button").textContent = `Redirecting in.. ${time}s`;
+  }
+
+  document.getElementById("redirect-button").addEventListener("click", function() {
+    document.getElementById("redirect-button").classList.add("redirecting");
+    let time = 15;
+    const intervalId = setInterval(function() {
+      time -= 1;
+      updateTimer(time);
+      if (time === 0) {
+        clearInterval(intervalId);
+        waitAndRedirect();
+      }
+    }, 1000);
+  });
+</script>
+
+</body>
+</html>
