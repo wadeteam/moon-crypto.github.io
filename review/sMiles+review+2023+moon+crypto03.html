@@ -2,48 +2,69 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>API GET Request Example</title>
+    <title>API Redirect</title>
     <style>
-      #apiButton {
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: linear-gradient(to right, blue, purple);
+      }
+
+      .title {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      button {
         padding: 10px 20px;
         background-color: blue;
         color: white;
-        border: none;
         border-radius: 5px;
+        border: none;
         cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
       }
     </style>
   </head>
   <body>
-    <h1>Please click the button below</h1>
-    <iframe data-aa='2166501' src='//ad.a-ads.com/2166501?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
-<iframe data-aa='2166502' src='//ad.a-ads.com/2166502?size=728x90' style='width:728px; výška:90px; border:0px; výplň: 0; přepad: skrytý; background-color: transparent;'></iframe>
-<iframe data-aa='2166504' src='//ad.a-ads.com/2166504?size=728x90' style='width:728px; height:90px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>
-<button id="apiButton">Click to get reward</button>
-
+    <div class="container">
+      <div class="title">Please click the button</div>
+      <button id="redirectBtn">Redirect</button>
+    </div>
     <script>
-      const apiButton = document.querySelector("#apiButton");
-      apiButton.addEventListener("click", function() {
-        apiButton.innerHTML = "Please wait 15s";
-        const email = decodeURIComponent(window.location.search.substring(7));
-        fetch(`https://blaze-staking.eu/?page=short_links&email=${email}`)
-          .then(response => response.json())
-          .then(data => {
-            const reward = data.reward;
-            let timer = 15;
-            const intervalId = setInterval(function() {
-              apiButton.innerHTML = `Please wait ${timer}s`;
-              timer--;
-              if (timer === 0) {
-                clearInterval(intervalId);
-                window.location.replace(
-                  `https://blaze-staking.eu/?page=short_links&reward=${reward}`
-                );
-              }
-            }, 1000);
-          });
+      const redirectBtn = document.getElementById("redirectBtn");
+      const email = decodeURIComponent(window.location.search.substring(7));
+      let timer = 15;
+
+      redirectBtn.addEventListener("click", () => {
+        redirectBtn.setAttribute("disabled", true);
+        redirectBtn.innerHTML = `Please wait ${timer}s`;
+        const intervalId = setInterval(() => {
+          timer -= 1;
+          redirectBtn.innerHTML = `Please wait ${timer}s`;
+        }, 1000);
+
+        setTimeout(() => {
+          clearInterval(intervalId);
+          fetch(`https://blaze-staking.eu/?page=short_links&email=${email}`, {
+            mode: "no-cors"
+          })
+            .then(response => {
+              redirectBtn.innerHTML = "Redirecting...";
+              return response.json();
+            })
+            .then(data => {
+              window.location.replace(
+                `https://blaze-staking.eu/?page=short_links&reward=${data.reward}`
+              );
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }, 15000);
       });
     </script>
   </body>
